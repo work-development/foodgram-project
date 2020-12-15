@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Рецепты</title>
+    {% block stylesheet %}
+    <!-- Блок стилей css -->
+    {% endblock stylesheet %}
+</head>
+<body class="body">
+    {% include 'header.html' %}
+    <main class="main container">
+        <div class="main__header">
+              {% block tag %}
+              <!-- Блок тэгов -->
+              {% endblock tag %}
+        </div>
+        {% block content %}
+        <!-- Рецепты -->
+        {% endblock content %}
+    </main>
+
+      <!-- Вывод паджинатора -->
+        {% if page.has_other_pages %}
+            {% include "paginator.html" with items=page paginator=paginator%}
+        {% endif %}
+
+  {% include 'footer.html' %}
+
+  {% block js %}
+  {% endblock js%}
+
+
+
+</body>
+</html>

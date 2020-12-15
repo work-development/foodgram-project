@@ -1,0 +1,82 @@
+{% load static %}
+{% load tag_filters %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Избранное</title>
+    <link rel="stylesheet" href="{% static './pages/index.css' %}">
+</head>
+<body class="body">
+{% include 'header.html' %}
+
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">Избранное</h1>
+            {% csrf_token %}
+            {% include 'tags.html' %}
+
+        </div>
+        <div class="card-list">
+            {% for post in page %}
+                <div class="card" data-id="{{ post.id }}">
+                     <a class="link" target="_blank"><img src="{{ post.image.url }}" alt="image is not available" class="card__image"></a>
+                        <div class="card__body">
+                            <a class="card__title link" href="{% url 'recipe_page' post.id %}" target="_blank">{{ post.name }}</a>
+                            {% if post.tag %}
+                            <ul class="card__items">
+                                {% for tag in post.tag.all %}
+                                <li class="card__item"><span class="badge badge_style_{{ tag.colour }}">{{tag.name}}</span></li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <div class="card__items card__items_column">
+                                <p class="card__text"><span class="icon-time"></span> {{ post.cooking_time }} мин.</p>
+                                <p class="card__text"><span class="icon-user"></span> <a href="{% url 'profile' post.author.username %}" style="color: black">
+                                    {% if post.author.first_name %}
+                                    {{ post.author.first_name }} {{ post.author.last_name }}
+                                    {% else%}
+                                    {{post.author }}
+                                    {% endif %}
+                                </a></p>
+                            </div>
+                        </div>
+
+                        <div class="card__footer">
+                            {% csrf_token %}
+                            {% if post.id in shopping_list %}
+                                <button class="button button_style_light-blue-outline" name="purchases" data-out><span class="icon-check button__icon"></span> Рецепт добавлен </button>
+                            {% else %}
+                                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                            {% endif %}
+                            {% if user.is_authenticated %}
+                            <button class="button button_style_none" name="favorites" {% if not post.id in favorites_list %}data-out{% endif %}><span class="icon-favorite {% if post.id in favorites_list %}icon-favorite_active{% else %}icon-favorite{% endif %}"></span></button>
+                            {% endif %}
+                        </div>
+                </div>
+            {% endfor%}
+        </div>
+
+      <!-- Вывод паджинатора -->
+        {% if page.has_other_pages %}
+            {% include "paginator.html" with items=page paginator=paginator%}
+        {% endif %}
+
+    </main>
+    {% include 'footer.html' %}
+<script src="{% static './js/components/MainCards.js' %}"></script>
+
+<script src="{% static './js/components/Purchases.js' %}"></script>
+<script src="{% static './js/components/Favorites.js' %}"></script>
+
+<script src="{% static './js/config/config.js' %}"></script>
+<script src="{% static './js/components/CardList.js' %}"></script>
+<script src="{% static './js/components/Header.js' %}"></script>
+
+<script src="{% static './js/api/Api.js' %}"></script>
+<script src="{% static 'favorite.js' %}"></script>
+</body>
+</html>
