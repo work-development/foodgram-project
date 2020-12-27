@@ -1,5 +1,7 @@
 from django import template
+
 from recipes.models import FollowUser, ShoppingList
+
 # В template.Library зарегистрированы все теги и фильтры шаблонов
 # добавляем к ним и наш фильтр
 register = template.Library()

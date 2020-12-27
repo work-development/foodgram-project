@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+
 import environ
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -42,6 +44,8 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'users',
     'recipes',
+    'rest_framework',
+    'corsheaders',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.admin',
@@ -52,7 +56,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.TokenAuthentication',
+#     ]
+# }
+
+APPEND_SLASH = False
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -148,9 +165,9 @@ USE_TZ = True
 STATIC_URL = "/static/"
 # теперь логотип можно будет запросить по адресу sitename.ex**/static/**images/logo.png
 
-# задаём адрес директории, куда командой *collectstatic* будет собрана вся статика
-#STATIC_ROOT = os.path.join(BASE_DIR, "static") #--- это работает но нужно сделать python manage.py collectstatic
-#
+#задаём адрес директории, куда командой *collectstatic* будет собрана вся статика
+STATIC_ROOT = os.path.join(BASE_DIR, "static1") #--- это работает но нужно сделать python manage.py collectstatic
+
 STATICFILES_DIRS = [
 os.path.join(BASE_DIR, "static")
 ]

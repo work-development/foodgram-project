@@ -1,5 +1,5 @@
-from recipes.models import ShoppingList
 from django.contrib.auth.decorators import login_required
+from recipes.models import ShoppingList
 
 
 def purchases_number(request):

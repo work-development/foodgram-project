@@ -21,7 +21,7 @@
             {% endif %}
             {% include 'tags.html' %}
         </div>
-       
+
 <!--        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>-->
         {% if request.user.is_authenticated %}
         {% if author_profile.username != request.user.username %}
@@ -69,7 +69,7 @@
                             <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
                         {% endif %}
                         {% if user.is_authenticated %}
-                        <button class="button button_style_none" name="favorites" {% if not post.id in favorites_list %}data-out{% endif %}><span class="icon-favorite {% if post.id in favorites_list %}icon-favorite_active{% else %}icon-favorite{% endif %}"></span></button>
+                        <button class="button button_style_none" name="favorites" {% if not post.is_favorite %}data-out{% endif %}><span class="icon-favorite {% if post.is_favorite %}icon-favorite_active{% else %}icon-favorite{% endif %}"></span></button>
                         {% endif %}
                     </div>
             </div>

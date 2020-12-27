@@ -1,5 +1,7 @@
 from django import forms
-from .models import Recipe, Tag, Ingredient
+
+from .models import Ingredient, Recipe, Tag
+
 
 class RecipeForm(forms.ModelForm):
     #tag = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), to_field_name="slug")

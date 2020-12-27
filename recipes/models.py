@@ -34,6 +34,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient, through="RecipeIngredient", blank=False
     )
+    is_favorite = models.BooleanField(blank=True)
 
     def __str__(self):
         return self.name

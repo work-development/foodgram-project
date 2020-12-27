@@ -1,35 +1,18 @@
-import json
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import (
-    Recipe,
-    User,
-    FollowRecipe,
-    ShoppingList,
-    Tag,
-    FollowUser,
-    Ingredient,
-    RecipeIngredient,
-)
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .forms import RecipeForm
-from django.http import JsonResponse, HttpResponse
+from django.core.paginator import Paginator
 from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import RecipeForm
+from .models import (FollowRecipe, FollowUser, Ingredient, Recipe,
+                     RecipeIngredient, ShoppingList, Tag, User)
 
 
 def index(request):
-    all_tags = Tag.objects.all()
-    tags = Tag.objects.filter(slug__in=request.GET.getlist("filters")).values_list(
-        "name", flat=True
-    )
-    tags = list(set(tags))
-    if tags != []:
-        t = (
-            Tag.objects.filter(name__in=tags)
-            .select_related("recipes")
-            .values_list("recipes", flat=True)
-        )
-        recipe_list = Recipe.objects.order_by("-pub_date").filter(id__in=t)
+    slugs = request.GET.getlist("filters")
+    if slugs != []:
+        recipe_list = Recipe.objects.order_by("-pub_date").filter(tag__slug__in=slugs)
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").all()
     paginator = Paginator(recipe_list, 6)  # показывать по 6 записей на странице.
@@ -45,11 +28,13 @@ def index(request):
             .values_list("recipe_id", flat=True)
         )
         shopping_list = Recipe.objects.filter(id__in=l).values_list("id", flat=True)
-        favorites_list = (
-            FollowRecipe.objects.filter(user=request.user)
-            .select_related("recipe")
-            .values_list("recipe_id", flat=True)
-        )
+        # favorites_list = (
+        #     FollowRecipe.objects.filter(user=request.user)
+        #     .select_related("recipe")
+        #     .values_list("recipe_id", flat=True)
+        # )
+        # f = Recipe.objects.annotate(Exists(favorites_list))
+        # print()
         return render(
             request,
             "indexAuth.html",
@@ -58,7 +43,7 @@ def index(request):
                 "paginator": paginator,
                 "shopping_list": shopping_list,
                 "favorites_list": favorites_list,
-                "all_tags": all_tags,
+                "all_tags": Tag.objects.all(),
             },
         )
     return render(
@@ -67,13 +52,13 @@ def index(request):
         {
             "page": page,
             "paginator": paginator,
-            "all_tags": all_tags,
+            "all_tags": Tag.objects.all(),
             "favorites_list": favorites_list,
         },
     )
 
 
-def RecipeDetailView(request, recipe_id):
+def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     ingredients = recipe.recipe_ingredients.all()
     is_author = False
@@ -153,21 +138,6 @@ def profile(request, username):
 
 
 @login_required
-def add_favorites(request):
-    d = json.loads(request.body)
-    id = d["id"]
-    recipe = get_object_or_404(Recipe, id=id)
-    FollowRecipe.objects.get_or_create(recipe=recipe, user=request.user)
-    return JsonResponse({"success": True})
-
-
-@login_required
-def delete_favorites(request, favorite_id):
-    FollowRecipe.objects.filter(recipe=favorite_id, user=request.user).delete()
-    return JsonResponse({"success": False})
-
-
-@login_required
 def new_recipe(request):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -222,38 +192,6 @@ def new_recipe(request):
             },
         )
     return redirect("/")
-
-
-# Функция передачи вываливающемуся списку (в поле ингридиенты в форме регистрации) ингредиентов
-# ассоциированных по первым буквам уже введенной части слова пользователем
-def ingredients(request):
-    associated_ingredients = list(
-        Ingredient.objects.filter(title__icontains=request.GET["query"]).values(
-            "title", "dimension"
-        )
-    )
-    return JsonResponse(associated_ingredients, safe=False)
-
-
-@login_required
-def subscriptions(request):
-    author_id = int(json.loads(request.body).get("id"))
-    author = get_object_or_404(User, pk=author_id)
-    if (
-        request.user.id != author_id
-        and FollowUser.objects.filter(user=request.user, author=author).count() == 0
-    ):
-        FollowUser.objects.create(user=request.user, author=author)
-    return JsonResponse({"success": True})
-
-
-@login_required
-def subscriptions_delete(request, author_id):
-    user = get_object_or_404(User, username=request.user.username)
-    author = get_object_or_404(User, id=author_id)
-    follow_user = get_object_or_404(FollowUser, user=user, author=author)
-    follow_user.delete()
-    return JsonResponse({"success": True})
 
 
 @login_required
@@ -313,24 +251,6 @@ def favorites_page(request):
             "all_tags": all_tags,
         },
     )
-
-
-@login_required
-def purchases(request):
-    id = int(json.loads(request.body).get("id"))
-    recipe = get_object_or_404(Recipe, pk=id)
-    if request.user.id != id:
-        ShoppingList.objects.create(user=request.user, recipe=recipe)
-        return JsonResponse({"success": True})
-
-
-@login_required
-def purchases_delete(request, id):
-    user = get_object_or_404(User, username=request.user.username)
-    recipe = get_object_or_404(Recipe, id=id)
-    shopping_list = get_object_or_404(ShoppingList, user=user, recipe=recipe)
-    shopping_list.delete()
-    return JsonResponse({"success": True})
 
 
 def shop_list(request):

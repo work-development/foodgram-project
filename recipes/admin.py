@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import  Recipe, Tag, RecipeIngredient, Ingredient, FollowRecipe, FollowUser, ShoppingList
+
+from .models import (FollowRecipe, FollowUser, Ingredient, Recipe,
+                     RecipeIngredient, ShoppingList, Tag)
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -9,7 +11,7 @@ class RecipeIngredientInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline,)
     # перечисляем поля, которые должны отображаться в админке
-    list_display = ("description", "cooking_time", "pub_date", "author", "image", "name")
+    list_display = ("description", "cooking_time", "pub_date", "author", "image", "name", "is_favorite")
     # добавляем интерфейс для поиска по тексту постов
     search_fields = ("description",)
     # добавляем возможность фильтрации по дате
