@@ -15,11 +15,11 @@ def index(request):
         recipe_list = Recipe.objects.order_by("-pub_date").filter(tag__slug__in=slugs)
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").all()
-    paginator = Paginator(recipe_list, 6)  # показывать по 6 записей на странице.
+    paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get(
         "page"
-    )  # переменная в URL с номером запрошенной страницы
-    page = paginator.get_page(page_number)  # получить записи с нужным смещением
+    )
+    page = paginator.get_page(page_number)  
     favorites_list = []
     if request.user.is_authenticated and not request.user.is_anonymous:
         l = (
