@@ -10,18 +10,13 @@ class RecipeIngredientInline(admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline,)
-    # перечисляем поля, которые должны отображаться в админке
     list_display = ("description", "cooking_time", "pub_date", "author", "image", "name", "is_favorite")
-    # добавляем интерфейс для поиска по тексту постов
     search_fields = ("description",)
-    # добавляем возможность фильтрации по дате
     list_filter = ("pub_date",)
 
-# при регистрации модели Recipe источником конфигурации для неё назначаем класс RecipeAdmin
 admin.site.register(Recipe, RecipeAdmin)
 
 class TagAdmin(admin.ModelAdmin):
-    # перечисляем поля, которые должны отображаться в админке
     list_display = ("name", "colour", "slug")
 
 
@@ -35,9 +30,7 @@ class IngredientAdmin(admin.ModelAdmin):
 admin.site.register(Ingredient, IngredientAdmin)
 
 class FollowRecipeAdmin(admin.ModelAdmin):
-    # перечисляем поля, которые должны отображаться в админке
     list_display = ("user", "recipe")
-    # добавляем интерфейс для поиска по тексту постов
     search_fields = ("user",)
 
 admin.site.register(FollowRecipe, FollowRecipeAdmin)

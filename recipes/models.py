@@ -5,36 +5,36 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
-    title = models.CharField(max_length=100, blank=False)
-    dimension = models.CharField(max_length=100, blank=True)
+    title = models.CharField(max_length=100, blank=False, verbose_name='Ingredient name')
+    dimension = models.CharField(max_length=100, blank=True, verbose_name='Units')
 
     def __str__(self):
         return self.title
 
 
 class Tag(models.Model):
-    name = models.TextField(blank=False)
-    colour = models.CharField(max_length=100, blank=True)
-    slug = models.SlugField(unique=True, null=True, blank=True)
+    name = models.TextField(blank=False, verbose_name='Tag name')
+    colour = models.CharField(max_length=100, blank=True, verbose_name='Colour name')
+    slug = models.SlugField(unique=True, null=True, blank=True, verbose_name='Slug name')
 
     def __str__(self):
         return self.name
 
 
 class Recipe(models.Model):
-    description = models.TextField(blank=False)
-    name = models.CharField(max_length=100, blank=False)
-    cooking_time = models.IntegerField(default=0)
+    description = models.TextField(blank=False, verbose_name='Recipe description')
+    name = models.CharField(max_length=100, blank=False, verbose_name='Recipe name')
+    cooking_time = models.IntegerField(default=0, verbose_name='Cooking time')
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True, db_index=True)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recipes", blank=False
+        User, on_delete=models.CASCADE, related_name="recipes", blank=False, verbose_name='recipe author'
     )
     image = models.ImageField(upload_to="recipes/", null=True, blank=False)
     tag = models.ManyToManyField(Tag, related_name="recipes", blank=False)
     ingredients = models.ManyToManyField(
-        Ingredient, through="RecipeIngredient", blank=False
+        Ingredient, through="RecipeIngredient", blank=False, verbose_name='recipe ingredients'
     )
-    is_favorite = models.BooleanField(blank=True)
+    is_favorite = models.BooleanField(blank=True, verbose_name='Is favorite')
 
     def __str__(self):
         return self.name

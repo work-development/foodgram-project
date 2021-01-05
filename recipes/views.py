@@ -5,17 +5,20 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import RecipeForm
+from .utils import*
+from .constants import*
 from .models import (FollowRecipe, FollowUser, Ingredient, Recipe,
                      RecipeIngredient, ShoppingList, Tag, User)
 
 
 def index(request):
+    print(request.GET)
     slugs = request.GET.getlist("filters")
     if slugs != []:
         recipe_list = Recipe.objects.order_by("-pub_date").filter(tag__slug__in=slugs)
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").all()
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
     page_number = request.GET.get(
         "page"
     )
@@ -28,13 +31,6 @@ def index(request):
             .values_list("recipe_id", flat=True)
         )
         shopping_list = Recipe.objects.filter(id__in=l).values_list("id", flat=True)
-        # favorites_list = (
-        #     FollowRecipe.objects.filter(user=request.user)
-        #     .select_related("recipe")
-        #     .values_list("recipe_id", flat=True)
-        # )
-        # f = Recipe.objects.annotate(Exists(favorites_list))
-        # print()
         return render(
             request,
             "indexAuth.html",
@@ -111,7 +107,7 @@ def profile(request, username):
         )
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").filter(author=author_profile)
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
     following = False
@@ -141,29 +137,14 @@ def profile(request, username):
 def new_recipe(request):
     if request.user.is_authenticated:
         if request.method == "POST":
-            tags = request.POST.getlist("tag")
-
-            tagss = []
-            for tag in ["breakfast", "lunch", "dinner"]:
-                if tag in request.POST.dict().keys():
-                    tagss.append(tag)
-
-            tags = Tag.objects.filter(slug__in=tagss)
-
-            author_ingredients = []
-            values = []
-            for key in request.POST.keys():
-                if key.split("_")[0] == "nameIngredient":
-                    author_ingredients.append(
-                        Ingredient.objects.filter(title=request.POST[key])
-                    )
-                if key.split("_")[0] == "valueIngredient":
-                    values.append(request.POST[key])
+            tags = get_tags(request)
+            author_ingredients, values = add_ingredients(request)
             text = request.POST["description"]
             form = RecipeForm(request.POST or None, files=request.FILES or None)
 
             if form.is_valid():
                 recipe = form.save(commit=False)
+                recipe.is_favorite = False
                 recipe.author = request.user
                 recipe.save()
                 for tag in tags:
@@ -191,13 +172,13 @@ def new_recipe(request):
                 "ingredients_list": ingredients_list,
             },
         )
-    return redirect("/")
+    return redirect("index")
 
 
 @login_required
 def subscribe_list(request):
     list_of_authors_I_follow = FollowUser.objects.filter(user=request.user)
-    paginator = Paginator(list_of_authors_I_follow, 6)
+    paginator = Paginator(list_of_authors_I_follow, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
     return render(request, "myFollow.html", {"page": page, "paginator": paginator})
@@ -229,7 +210,7 @@ def favorites_page(request):
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").filter(id__in=favorites_list)
 
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
@@ -262,7 +243,7 @@ def shop_list(request):
             .values_list("recipe_id", flat=True)
         )
         recipe_shopping_list = Recipe.objects.filter(id__in=shopping_list)
-        paginator = Paginator(recipe_shopping_list, 6)
+        paginator = Paginator(recipe_shopping_list, ITEMS_PER_PAGE)
         page_number = request.GET.get("page")
         page = paginator.get_page(page_number)
         return render(request, "shopList.html", {"page": page, "paginator": paginator})
@@ -305,22 +286,10 @@ def recipe_edit(request, username, recipe_id):
     if request.user != profile:
         return redirect("recipe_page", recipe_id=recipe_id)
     ingredients = recipe.ingredients.through.objects.filter(recipe=recipe).all()
+    tags = get_tags(request)
 
-    tagss = []
-    for tag in ["breakfast", "lunch", "dinner"]:
-        if tag in request.POST.dict().keys():
-            tagss.append(tag)
-    tags = Tag.objects.filter(slug__in=tagss)
+    author_ingredients, values = add_ingredients(request)
 
-    author_ingredients = []
-    values = []
-    for key in request.POST.keys():
-        if key.split("_")[0] == "nameIngredient":
-            author_ingredients.append(
-                Ingredient.objects.filter(title=request.POST[key])
-            )
-        if key.split("_")[0] == "valueIngredient":
-            values.append(request.POST[key])
 
     form = RecipeForm(
         request.POST or None, files=request.FILES or None, instance=recipe

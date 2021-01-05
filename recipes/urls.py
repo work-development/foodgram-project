@@ -7,7 +7,6 @@ from .api import FavoriteViewSet
 router = DefaultRouter()
 router.register("favorites", FavoriteViewSet, basename="favorites")
 
-print(router.urls)
 urlpatterns = [
     path("api/", include(router.urls)),
     path("recipe/<int:recipe_id>/", views.recipe_detail, name="recipe_page"),
@@ -28,7 +27,7 @@ urlpatterns = [
     path("shop_list", views.shop_list, name="shop_list"),
     path("purchases/<int:id>", api.purchases_delete, name="purchases_del"),
     path("purchases", api.purchases, name="purchases"),
-    path("ingredients/", api.ingredients, name="ingredients"),
+    path("ingredients", api.ingredients, name="ingredients"),
     path(
         "subscriptions/<int:author_id>",
         api.subscriptions_delete,

@@ -66,7 +66,7 @@ INSTALLED_APPS = [
 #     ]
 # }
 
-APPEND_SLASH = False
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

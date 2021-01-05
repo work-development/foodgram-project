@@ -22,8 +22,4 @@ def get_filter_link(request, tag):
                         rq.appendlist("filters", tag.slug)
                 return rq.urlencode()
         L = rq.urlencode()
-        #print(f'L = {L}')
-        #print(L.find('filters'), L[L.find('filters'):])
-        #print(f"QQQQQQQQQQQQQQQQQQQQQQQQQ {'&'.join(L.split('filters')[1:])}")
-        #return "&".join(L.split('&')[1:])
         return  L[L.find('filters'):]
