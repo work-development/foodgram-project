@@ -37,6 +37,7 @@ jobs:
           script: |
            cd ~
            pwd
+           mkdir foodgram-project
            cd foodgram-project
            pwd
            sudo docker rmi sergeidocker/foodgram-project -f $( sudo docker images sergeidocker/foodgram-project -q)
