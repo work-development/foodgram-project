@@ -29,7 +29,7 @@
                 {% endif %}
                 <div class="card__items card__items_column">
                     <p class="card__text"><span class="icon-time"></span> {{ post.cooking_time }} мин.</p>
-                    <p class="card__text"><span class="icon-user"></span> <a {% if post.author.first_name %} href="{% url 'profile' post.author.username %}" {% else %} href="{% url 'profile' 'admin_recipes' %}" {% endif %} style="color: black">
+                    <p class="card__text"><span class="icon-user"></span> <a href="{% url 'profile' post.author.username %}"  style="color: black">
                         {% if post.author.first_name %}
                         {{ post.author.first_name }} {{ post.author.last_name }}
                         {% else%}

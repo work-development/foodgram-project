@@ -31,7 +31,7 @@ urlpatterns = [
     # регистрация и авторизация
     path("auth/", include("users.urls")),
 
-    path("admin/", admin.site.urls),
+    path("admin-page/", admin.site.urls),
 
 
     # если нужного шаблона для /auth не нашлось в файле users.urls —

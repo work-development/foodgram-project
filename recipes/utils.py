@@ -1,8 +1,9 @@
 from .models import Tag, Ingredient
+from .constants import*
 
 def get_tags(request):
     tagss = []
-    for tag in ["breakfast", "lunch", "dinner"]:
+    for tag in TAGS_LIST:
         if tag in request.POST.dict().keys():
             tagss.append(tag)
 

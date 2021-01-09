@@ -28,6 +28,17 @@ jobs:
      runs-on: ubuntu-latest
      needs: build_and_push_to_dockerhub
      steps: 
+       - uses: actions/checkout@master
+       - name: copy files
+         uses: appleboy/scp-action@master
+         with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          rm: true
+          source: "ngnix/*, .env, docker-compose.yaml"
+          target: "/home/sergei/foodgram-project"
+
        - name: creating and running container
          uses: appleboy/ssh-action@master
          with:
@@ -37,7 +48,6 @@ jobs:
           script: |
            cd ~
            pwd
-           mkdir foodgram-project
            cd foodgram-project
            pwd
            sudo docker rmi sergeidocker/foodgram-project -f $( sudo docker images sergeidocker/foodgram-project -q)

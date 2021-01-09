@@ -87,8 +87,6 @@ def recipe_detail(request, recipe_id):
 
 def profile(request, username):
     all_tags = Tag.objects.all()
-    if username == "admin_recipes":
-        username = "admin"
     author_profile = get_object_or_404(User, username=username)
     tags = Tag.objects.filter(slug__in=request.GET.getlist("filters")).values_list(
         "name", flat=True
