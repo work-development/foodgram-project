@@ -1,12 +1,12 @@
 FROM python:3.8
 
-RUN mkdir /code
+RUN mkdir /foodgram-project
 
-WORKDIR /code
+WORKDIR /foodgram-project
 
-COPY . /code
+COPY . /foodgram-project
 
 RUN pip install --upgrade pip
-RUN pip install -r /code/requirements.txt
+RUN pip install -r /foodgram-project/requirements.txt
 
 RUN python manage.py collectstatic --noinput
