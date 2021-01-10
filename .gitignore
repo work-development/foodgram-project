@@ -130,4 +130,6 @@ dmypy.json
 
 
 static1
-s
+dump.json
+dump1.json
+dump2.json
