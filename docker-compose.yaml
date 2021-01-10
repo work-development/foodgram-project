@@ -20,8 +20,8 @@ services:
     restart: always
     command: gunicorn foodgram.wsgi:application --bind 0.0.0.0:4000
     volumes:
-      - static_volume:/foodgram-project/static/
-      - media_volume:/foodgram-project/media/
+      - static_volume:./foodgram-project/static/
+      - media_volume:./foodgram-project/media/
     ports:
       - 4000:4000
     depends_on:
@@ -35,8 +35,8 @@ services:
       - web
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - static_volume:/foodgram-project/static/
-      - media_volume:/foodgram-project/media/
+      - static_volume:./foodgram-project/static/
+      - media_volume:./foodgram-project/media/
     ports:
       - "8080:80"
     depends_on:
