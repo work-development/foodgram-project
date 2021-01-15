@@ -27,25 +27,34 @@ handler500 = "recipes.views.server_error"  # noqa
 urlpatterns = [
     # flatpages
     path("about/", include("django.contrib.flatpages.urls")),
-
     # регистрация и авторизация
     path("auth/", include("users.urls")),
-
     path("admin-page/", admin.site.urls),
-
-
     # если нужного шаблона для /auth не нашлось в файле users.urls —
     # ищем совпадения в файле django.contrib.auth.urls
     path("auth/", include("django.contrib.auth.urls")),
-
 ]
 
 
-
 urlpatterns += [
-    path('about-project/', views.flatpage, {'url': '/about-project/'}, name='about-project'),
-    path('about-author/', views.flatpage, {'url': '/about-author/'}, name='about-author'),
-    path('about-spec/', views.flatpage, {'url': '/about-spec/'}, name='about-spec'),
+    path(
+        "about-project/",
+        views.flatpage,
+        {"url": "/about-project/"},
+        name="about-project",
+    ),
+    path(
+        "about-author/",
+        views.flatpage,
+        {"url": "/about-author/"},
+        name="about-author",
+    ),
+    path(
+        "about-spec/",
+        views.flatpage,
+        {"url": "/about-spec/"},
+        name="about-spec",
+    ),
 ]
 
 urlpatterns += [
@@ -54,7 +63,11 @@ urlpatterns += [
 ]
 
 
-#эти строки — в самый конец файла
+# эти строки — в самый конец файла
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    )

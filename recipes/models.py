@@ -8,7 +8,9 @@ class Ingredient(models.Model):
     title = models.CharField(
         max_length=100, blank=False, verbose_name="Ingredient name"
     )
-    dimension = models.CharField(max_length=100, blank=True, verbose_name="Units")
+    dimension = models.CharField(
+        max_length=100, blank=True, verbose_name="Units"
+    )
 
     def __str__(self):
         return self.title
@@ -16,7 +18,9 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.TextField(blank=False, verbose_name="Tag name")
-    colour = models.CharField(max_length=100, blank=True, verbose_name="Colour name")
+    colour = models.CharField(
+        max_length=100, blank=True, verbose_name="Colour name"
+    )
     slug = models.SlugField(
         unique=True, null=True, blank=True, verbose_name="Slug name"
     )
@@ -26,10 +30,16 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    description = models.TextField(blank=False, verbose_name="Recipe description")
-    name = models.CharField(max_length=100, blank=False, verbose_name="Recipe name")
+    description = models.TextField(
+        blank=False, verbose_name="Recipe description"
+    )
+    name = models.CharField(
+        max_length=100, blank=False, verbose_name="Recipe name"
+    )
     cooking_time = models.IntegerField(default=0, verbose_name="Cooking time")
-    pub_date = models.DateTimeField("Дата публикации", auto_now_add=True, db_index=True)
+    pub_date = models.DateTimeField(
+        "Дата публикации", auto_now_add=True, db_index=True
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -60,10 +70,16 @@ class Recipe(models.Model):
 class RecipeIngredient(models.Model):
     number = models.IntegerField()
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, related_name="recipes", blank=False
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name="recipes",
+        blank=False,
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="recipe_ingredients", blank=False
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="recipe_ingredients",
+        blank=False,
     )
 
     def __str__(self):
@@ -83,14 +99,22 @@ class FollowRecipe(models.Model):
     )
 
     def __str__(self):
-        return f"follower_recipe - {self.user} following_recipe - {self.recipe}"
+        return (
+            f"follower_recipe - {self.user} following_recipe - {self.recipe}"
+        )
 
 
 class FollowUser(models.Model):
     user = models.ForeignKey(
-        User, blank=True, null=True, on_delete=models.CASCADE, related_name="follower"
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="follower",
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="following"
+    )
 
     def __str__(self):
         return f"follower - {self.user} following - {self.author}"
@@ -105,7 +129,9 @@ class ShoppingList(models.Model):
         related_name="shoppinglist",
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="recipes_in_shoppinglist"
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="recipes_in_shoppinglist",
     )
 
     def __str__(self):

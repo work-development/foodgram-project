@@ -6,21 +6,26 @@ from django.shortcuts import get_object_or_404
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
-from .models import FollowRecipe, FollowUser, Ingredient, Recipe, ShoppingList, User
+
+from .models import (
+    FollowRecipe,
+    FollowUser,
+    Ingredient,
+    Recipe,
+    ShoppingList,
+    User,
+)
 from .serializers import FavoriteSerializer
 
 
 class FavoriteViewSet(viewsets.ModelViewSet):
     serializer_class = FavoriteSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
-    # permission_classes = [IsAuthenticated]
-
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
 
     def create(self, request):
         recipe = get_object_or_404(Recipe, id=self.request.data.get("id"))
-        FollowRecipe.objects.get_or_create(recipe=recipe, user=self.request.user)
+        FollowRecipe.objects.get_or_create(
+            recipe=recipe, user=self.request.user
+        )
         recipe.is_favorite = True
         recipe.save()
         serializer = FavoriteSerializer(recipe)
@@ -28,7 +33,9 @@ class FavoriteViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk):
         favorite_id = pk
-        fr = FollowRecipe.objects.filter(recipe=favorite_id, user=self.request.user)
+        fr = FollowRecipe.objects.filter(
+            recipe=favorite_id, user=self.request.user
+        )
         recipe = Recipe.objects.get(id=favorite_id)
         recipe.is_favorite = False
         recipe.save()
@@ -41,9 +48,9 @@ class FavoriteViewSet(viewsets.ModelViewSet):
 # ассоциированных по первым буквам уже введенной части слова пользователем
 def ingredients(request):
     associated_ingredients = list(
-        Ingredient.objects.filter(title__icontains=request.GET["query"]).values(
-            "title", "dimension"
-        )
+        Ingredient.objects.filter(
+            title__icontains=request.GET["query"]
+        ).values("title", "dimension")
     )
     return JsonResponse(associated_ingredients, safe=False)
 
@@ -54,7 +61,8 @@ def subscriptions(request):
     author = get_object_or_404(User, pk=author_id)
     if (
         request.user.id != author_id
-        and FollowUser.objects.filter(user=request.user, author=author).count() == 0
+        and FollowUser.objects.filter(user=request.user, author=author).count()
+        == 0
     ):
         FollowUser.objects.create(user=request.user, author=author)
     return JsonResponse({"success": True})

@@ -48,7 +48,9 @@ class Migration(migrations.Migration):
                 (
                     "pub_date",
                     models.DateTimeField(
-                        auto_now_add=True, db_index=True, verbose_name="Дата публикации"
+                        auto_now_add=True,
+                        db_index=True,
+                        verbose_name="Дата публикации",
                     ),
                 ),
                 ("image", models.ImageField(null=True, upload_to="recipes/")),
@@ -120,6 +122,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="recipe",
             name="tag",
-            field=models.ManyToManyField(related_name="recipes", to="recipes.Tag"),
+            field=models.ManyToManyField(
+                related_name="recipes", to="recipes.Tag"
+            ),
         ),
     ]

@@ -22,7 +22,9 @@ from .models import (
 def index(request):
     slugs = request.GET.getlist("filters")
     if slugs != []:
-        recipe_list = Recipe.objects.order_by("-pub_date").filter(tag__slug__in=slugs)
+        recipe_list = Recipe.objects.order_by("-pub_date").filter(
+            tag__slug__in=slugs
+        )
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").all()
     paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
@@ -35,7 +37,9 @@ def index(request):
             .select_related("recipe")
             .values_list("recipe_id", flat=True)
         )
-        shopping_list = Recipe.objects.filter(id__in=l).values_list("id", flat=True)
+        shopping_list = Recipe.objects.filter(id__in=l).values_list(
+            "id", flat=True
+        )
         return render(
             request,
             "indexAuth.html",
@@ -64,12 +68,12 @@ def recipe_detail(request, recipe_id):
     ingredients = recipe.recipe_ingredients.all()
     is_author = False
     if request.user.is_authenticated:
-        subscriptions_list = FollowUser.objects.filter(user=request.user).values_list(
-            "author", flat=True
-        )
-        shopping_list = ShoppingList.objects.filter(user=request.user).values_list(
-            "id", flat=True
-        )
+        subscriptions_list = FollowUser.objects.filter(
+            user=request.user
+        ).values_list("author", flat=True)
+        shopping_list = ShoppingList.objects.filter(
+            user=request.user
+        ).values_list("id", flat=True)
         is_author = True
         return render(
             request,
@@ -93,9 +97,9 @@ def recipe_detail(request, recipe_id):
 def profile(request, username):
     all_tags = Tag.objects.all()
     author_profile = get_object_or_404(User, username=username)
-    tags = Tag.objects.filter(slug__in=request.GET.getlist("filters")).values_list(
-        "name", flat=True
-    )
+    tags = Tag.objects.filter(
+        slug__in=request.GET.getlist("filters")
+    ).values_list("name", flat=True)
     tags = list(set(tags))
     if tags != []:
         t = (
@@ -109,7 +113,9 @@ def profile(request, username):
             .filter(author=author_profile)
         )
     else:
-        recipe_list = Recipe.objects.order_by("-pub_date").filter(author=author_profile)
+        recipe_list = Recipe.objects.order_by("-pub_date").filter(
+            author=author_profile
+        )
     paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
@@ -143,7 +149,9 @@ def new_recipe(request):
             tags = get_tags(request)
             author_ingredients, values = add_ingredients(request)
             text = request.POST["description"]
-            form = RecipeForm(request.POST or None, files=request.FILES or None)
+            form = RecipeForm(
+                request.POST or None, files=request.FILES or None
+            )
 
             if form.is_valid():
                 recipe = form.save(commit=False)
@@ -157,7 +165,9 @@ def new_recipe(request):
                 recipe.save()
                 for i, ingredient in enumerate(author_ingredients):
                     recipe_ingredient = RecipeIngredient(
-                        number=values[i], ingredient=ingredient.get(), recipe=recipe
+                        number=values[i],
+                        ingredient=ingredient.get(),
+                        recipe=recipe,
                     )
                     recipe_ingredient.save()
 
@@ -184,15 +194,17 @@ def subscribe_list(request):
     paginator = Paginator(list_of_authors_I_follow, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
-    return render(request, "myFollow.html", {"page": page, "paginator": paginator})
+    return render(
+        request, "myFollow.html", {"page": page, "paginator": paginator}
+    )
 
 
 @login_required
 def favorites_page(request):
     all_tags = Tag.objects.all()
-    tags = Tag.objects.filter(slug__in=request.GET.getlist("filters")).values_list(
-        "name", flat=True
-    )
+    tags = Tag.objects.filter(
+        slug__in=request.GET.getlist("filters")
+    ).values_list("name", flat=True)
     tags = list(set(tags))
     favorites_list = (
         FollowRecipe.objects.filter(user=request.user)
@@ -211,7 +223,9 @@ def favorites_page(request):
             .filter(id__in=favorites_list)
         )
     else:
-        recipe_list = Recipe.objects.order_by("-pub_date").filter(id__in=favorites_list)
+        recipe_list = Recipe.objects.order_by("-pub_date").filter(
+            id__in=favorites_list
+        )
 
     paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
@@ -222,7 +236,9 @@ def favorites_page(request):
         .select_related("recipe")
         .values_list("recipe_id", flat=True)
     )
-    shopping_list = Recipe.objects.filter(id__in=l).values_list("id", flat=True)
+    shopping_list = Recipe.objects.filter(id__in=l).values_list(
+        "id", flat=True
+    )
 
     return render(
         request,
@@ -249,7 +265,9 @@ def shop_list(request):
         paginator = Paginator(recipe_shopping_list, ITEMS_PER_PAGE)
         page_number = request.GET.get("page")
         page = paginator.get_page(page_number)
-        return render(request, "shopList.html", {"page": page, "paginator": paginator})
+        return render(
+            request, "shopList.html", {"page": page, "paginator": paginator}
+        )
     else:
         return redirect("/auth/login/")
 
@@ -272,7 +290,9 @@ def download_shopping_list(request):
     for item in ingredients:
         line = " ".join(str(value) for value in item.values())
         file_data += line + "\n"
-    response = HttpResponse(file_data, content_type="application/text charset=utf-8")
+    response = HttpResponse(
+        file_data, content_type="application/text charset=utf-8"
+    )
     response["Content-Disposition"] = 'attachment; filename="ShoppingList.txt"'
     return response
 
@@ -288,7 +308,9 @@ def recipe_edit(request, username, recipe_id):
     )
     if request.user != profile:
         return redirect("recipe_page", recipe_id=recipe_id)
-    ingredients = recipe.ingredients.through.objects.filter(recipe=recipe).all()
+    ingredients = recipe.ingredients.through.objects.filter(
+        recipe=recipe
+    ).all()
     tags = get_tags(request)
 
     author_ingredients, values = add_ingredients(request)
@@ -308,7 +330,9 @@ def recipe_edit(request, username, recipe_id):
             recipe.save()
             for i, ingredient in enumerate(author_ingredients):
                 recipe_ingredient = RecipeIngredient(
-                    number=values[i], ingredient=ingredient.get(), recipe=recipe
+                    number=values[i],
+                    ingredient=ingredient.get(),
+                    recipe=recipe,
                 )
                 recipe_ingredient.save()
 
