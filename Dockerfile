@@ -1,12 +1,11 @@
 FROM python:3.8
 
-RUN mkdir /foodgram-project
+WORKDIR code
 
-WORKDIR /foodgram-project
-
-COPY . /foodgram-project
+COPY . /code
 
 RUN pip install --upgrade pip
-RUN pip install -r /foodgram-project/requirements.txt
+RUN pip install -r /code/requirements.txt
 
 RUN python manage.py collectstatic --noinput
+CMD gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000

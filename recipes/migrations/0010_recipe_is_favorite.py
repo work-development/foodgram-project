@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0009_auto_20201212_1918'),
+        ("recipes", "0009_auto_20201212_1918"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='is_favorite',
+            model_name="recipe",
+            name="is_favorite",
             field=models.BooleanField(blank=True, default=False),
             preserve_default=False,
         ),

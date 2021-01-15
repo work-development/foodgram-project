@@ -6,8 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
-from .models import (FollowRecipe, FollowUser, Ingredient, Recipe,
-                     ShoppingList, User)
+from .models import FollowRecipe, FollowUser, Ingredient, Recipe, ShoppingList, User
 from .serializers import FavoriteSerializer
 
 
@@ -37,26 +36,6 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         serializer = FavoriteSerializer(recipe)
         return Response(serializer.data)
 
-
-# Оставил как важный альтернативный паттерн
-# @login_required
-# def add_favorites(request):
-#     d = json.loads(request.body)
-#     id = d["id"]
-#     recipe = get_object_or_404(Recipe, id=id)
-#     recipe.is_favorite = True
-#     recipe.save()
-#     FollowRecipe.objects.get_or_create(recipe=recipe, user=request.user)
-#     return JsonResponse({"success": True})
-#
-# @login_required
-# def delete_favorites(request, favorite_id):
-#     fr =  FollowRecipe.objects.filter(recipe=favorite_id, user=request.user)
-#     r = Recipe.objects.get(id=favorite_id)
-#     r.is_favorite = False
-#     r.save()
-#     fr.delete()
-#     return JsonResponse({"success": False})
 
 # Функция передачи вываливающемуся списку (в поле ингридиенты в форме регистрации) ингредиентов
 # ассоциированных по первым буквам уже введенной части слова пользователем

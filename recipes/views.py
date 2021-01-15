@@ -2,27 +2,32 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 
 from .forms import RecipeForm
-from .utils import*
-from .constants import*
-from .models import (FollowRecipe, FollowUser, Ingredient, Recipe,
-                     RecipeIngredient, ShoppingList, Tag, User)
+from .utils import get_tags, add_ingredients
+from .constants import *
+from .models import (
+    FollowRecipe,
+    FollowUser,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingList,
+    Tag,
+    User,
+)
 
 
 def index(request):
-    print(request.GET)
     slugs = request.GET.getlist("filters")
     if slugs != []:
         recipe_list = Recipe.objects.order_by("-pub_date").filter(tag__slug__in=slugs)
     else:
         recipe_list = Recipe.objects.order_by("-pub_date").all()
     paginator = Paginator(recipe_list, ITEMS_PER_PAGE)
-    page_number = request.GET.get(
-        "page"
-    )
-    page = paginator.get_page(page_number)  
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
     favorites_list = []
     if request.user.is_authenticated and not request.user.is_anonymous:
         l = (
@@ -158,7 +163,7 @@ def new_recipe(request):
 
                 recipe.description = text
                 form.save_m2m()
-                return redirect("/")
+                return redirect(reverse(index))
         form = RecipeForm()
         ingredients_list = Ingredient.objects.all()
         return render(
@@ -287,7 +292,6 @@ def recipe_edit(request, username, recipe_id):
     tags = get_tags(request)
 
     author_ingredients, values = add_ingredients(request)
-
 
     form = RecipeForm(
         request.POST or None, files=request.FILES or None, instance=recipe

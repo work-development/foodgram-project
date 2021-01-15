@@ -5,8 +5,10 @@ from .models import Recipe
 
 class FavoriteSerializer(serializers.ModelSerializer):
     success = serializers.SerializerMethodField()
+
     class Meta:
-        fields = ['success']
+        fields = ["success"]
         model = Recipe
+
     def get_success(self, obj):
         return obj.is_favorite

@@ -1,5 +1,6 @@
 from .models import Tag, Ingredient
-from .constants import*
+from .constants import *
+
 
 def get_tags(request):
     tagss = []
@@ -23,8 +24,3 @@ def add_ingredients(request):
             values.append(request.POST[key])
 
     return author_ingredients, values
-
-
-
-
-
