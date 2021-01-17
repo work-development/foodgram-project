@@ -173,7 +173,7 @@ def new_recipe(request):
 
                 recipe.description = text
                 form.save_m2m()
-                return redirect(reverse(index))
+                return redirect("index")
         form = RecipeForm()
         ingredients_list = Ingredient.objects.all()
         return render(
@@ -269,7 +269,7 @@ def shop_list(request):
             request, "shopList.html", {"page": page, "paginator": paginator}
         )
     else:
-        return redirect("/auth/login/")
+        return redirect("login")
 
 
 @login_required
@@ -356,7 +356,7 @@ def recipe_delete(request, username, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if request.user.username == username:
         recipe.delete()
-        return redirect("/")
+        return redirect("index")
 
 
 def page_not_found(request, exception):

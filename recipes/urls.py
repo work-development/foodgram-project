@@ -10,11 +10,6 @@ router.register("favorites", FavoriteViewSet, basename="favorites")
 urlpatterns = [
     path("api/", include(router.urls)),
     path("recipe/<int:recipe_id>/", views.recipe_detail, name="recipe_page"),
-    # Сохранил как альтернативный паттерн для будущего
-    # path("favorites", api.add_favorites, name="favorite_add"),
-    # path(
-    #     "favorites/<int:favorite_id>/", api.delete_favorites, name="favorite_delete"
-    # ),
     path("new_recipe", views.new_recipe, name="new_recipe"),
     path("subscribe_list", views.subscribe_list, name="subscribe_list"),
     path("favorites_page", views.favorites_page, name="favorites_page"),
