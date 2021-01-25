@@ -37,7 +37,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           rm: true
           source: './.env, ./nginx/nginx.conf, ./nginx/Dockerfile, ./docker-compose.yaml'
-          target: "./foodgram-project"
+          target: "home/sergei/foodgram-project"
 
        - name: creating and running container
          uses: appleboy/ssh-action@master
