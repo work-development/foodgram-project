@@ -36,8 +36,8 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           rm: true
-          source: "ngnix/*, .env, docker-compose.yaml"
-          target: "/home/sergei/foodgram-project"
+          source: './.env, ./nginx/nginx.conf, ./nginx/Dockerfile, ./docker-compose.yaml'
+          target: "/foodgram-project"
 
        - name: creating and running container
          uses: appleboy/ssh-action@master
@@ -53,6 +53,7 @@ jobs:
            sudo docker rmi sergeidocker/foodgram-project -f $( sudo docker images sergeidocker/foodgram-project -q)
            sudo docker pull sergeidocker/foodgram-project:latest
            sudo docker-compose up --force-recreate -d web
+           sudo docker-compose exec web python manage.py migrate
   send_message:
      runs-on: ubuntu-latest
      needs: deploy
