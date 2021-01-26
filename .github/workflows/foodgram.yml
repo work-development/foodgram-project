@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           rm: true
-          source: './.env, ./nginx/nginx.conf, ./Dockerfile, ./docker-compose.yaml'
+          source: './.env, ./nginx/nginx.conf, ./Dockerfile, ./docker-compose.yaml ./requirements.txt'
           target: "./foodgram-project"
 
        - name: creating and running container
