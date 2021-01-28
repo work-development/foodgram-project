@@ -45,7 +45,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          script: |            
+          script: | 
+           sudo cd foodgram-project
            sudo docker-compose stop && sudo docker container prune -f
            sudo docker image rm sergeidocker/foodgram-project:latest
            sudo docker-compose up -d --build
