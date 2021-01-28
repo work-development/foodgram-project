@@ -48,10 +48,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: | 
            cd foodgram-project
-           sudo docker rmi sergeidocker/foodgram-project -f $( sudo docker images sergeidocker/foodgram-project -q)
+           sudo docker stop $(sudo docker ps -a -q)
+           sudo docker image prune -f
            sudo docker pull sergeidocker/foodgram-project
-           sudo docker-compose up --force-recreate -d web
+           sudo docker-compose up -d --force-recreate
            sudo docker-compose exec web python manage.py migrate
+
 
 
            
