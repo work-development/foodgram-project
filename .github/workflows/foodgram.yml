@@ -38,6 +38,11 @@ jobs:
           rm: true
           source: './.env, ./nginx, ./docker-compose.yaml ./Dockerfile ./requirements.txt'
           target: "/home/sergei/foodgram-project"
+          source: './docker-compose.yaml ./Dockerfile ./requirements.txt'
+          target: "/home/sergei/foodgram-project"
+          source: './requirements.txt'
+          target: "/home/sergei/foodgram-project"
+          
 
        - name: creating and running container
          uses: appleboy/ssh-action@master
