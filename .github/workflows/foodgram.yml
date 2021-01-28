@@ -45,15 +45,10 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          script: | 
-           cd ~
-           pwd
-           cd foodgram-project
-           pwd
-           sudo docker rmi sergeidocker/foodgram-project -f $( sudo docker images sergeidocker/foodgram-project -q)
-           sudo docker pull sergeidocker/foodgram-project
-           sudo docker-compose up --force-recreate -d web
-           sudo docker-compose exec web python manage.py migrate
+          script: |            
+           sudo docker-compose stop && sudo docker container prune -f
+           sudo docker image rm sergeidocker/foodgram-project:latest
+           sudo docker-compose up -d --build
            
   send_message:
      runs-on: ubuntu-latest
