@@ -52,7 +52,8 @@ jobs:
            sudo docker image prune -f
            sudo docker pull sergeidocker/foodgram-project
            sudo docker-compose up -d --force-recreate
-           sudo docker-compose exec -t -i foodgram-project_web_1 python manage.py migrate
+           sudo ID_container=$(sudo docker ps -aqf "name=foodgram-project_web_1")
+           sudo docker-compose exec -t -i ID_container python manage.py migrate
 
 
 
