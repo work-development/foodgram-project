@@ -23,6 +23,7 @@ services:
       - media_volume:/code/media
     depends_on:
       - db
+    container_name: foodgram
     env_file:
       - ./.env
 
