@@ -43,4 +43,3 @@ python manage.py createsuperuser
 * [PostgreSQL](https://www.postgresql.org/)
 * [Docker](https://www.docker.com/)
 
-## Licence
