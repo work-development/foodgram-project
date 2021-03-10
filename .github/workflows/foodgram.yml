@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           rm: true
           source: './'
-          target: "/home/foodgram-project"
+          target: "/foodgram-project"
           
 
        - name: creating and running container
