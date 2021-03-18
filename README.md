@@ -69,6 +69,7 @@ sudo nano settings.py
 sudo nano nginx.conf
 ```
 и добавьте в перечень server_name Ваш ID сервера
+
 8. Запустите docker-compose
 ```
 sudo docker-compose up
