@@ -14,8 +14,8 @@
 python -m venv venv
 ```
 5. Запустите виртуальное окружение
-В cmd перейти в директорию ...\venv\Scripts и выполните команду activate.bat
-6. Установите необходимы библиотеки  
+В cmd перейдите в директорию ...\venv\Scripts и выполните команду activate.bat
+6. Установите необходимые библиотеки  
 ```
 pip install -r requirements.txt
 ``` 
@@ -32,33 +32,62 @@ python manage.py runserver
 ```
 python manage.py createsuperuser
 ```
-Теперь по адресу http://127.0.0.1:8000/admin/ будет доступен вход в административный раздел сайта
-## Тестовый пользователь
+Теперь по адресу http://127.0.0.1:8000/admin-page/ будет доступен вход в административный раздел сайта
 
-You can use test user to Login:
-
-Username: test_user
-
-Password: jTzrNb42
-
-
-## Запуск docker-compose:
+## Запуск проекта на сервере
+1. Склонируйте проект
+2. Упакуйте файлы в zip файл (foodgram-project.zip)
+3. Установите на сервере Docker и docker-compose
+4. Установите утилиту для распаковки ZIP
 ```
-docker-compose up --build
+sudo apt install unzip
 ```
-## Первый запуск
-**For the first launch**, for project functionality, go inside to the container:
+5. Перенесите foodgram-project.zip на сервер и распакуйте его. Для этого локально выполните команду в cmd
 ```
-docker exec web -t -i <WEB CONTAINER ID> bash
+scp foodgram-project.zip логин_сервера@ID_сервера: /home/логин_сервера/foodgram-project
 ```
-**Сделать миграции:**
+И распакуйте этот файл на сервере, для этого перейдите на сервере в директорию /foodgram-project и выполните команду
 ```
-python manage.py migrate
+sudo unzip foodgram-project.zip
 ```
-**Создать суперпользователя:**
+6. Настройти параметры БД. Перейдите /foodgram-project/foodgram и выполните команду
 ```
-python manage.py createsuperuser
+sudo nano .env
 ```
+Измените параметры
+```
+DB_NAME=postgres
+DB_HOST=db
+DB_PORT=5432
+```
+7. Добавьте ID сервера в настройки проекта. Для этого в директории на сервере/foodgram-project/foodgram выполните
+```
+sudo nano settings.py
+```
+после чего добавьте Ваш ID в список параметра ALLOWED_HOSTS. Затем в директории /foodgram-project/nginx/nginx.conf выполните
+```
+sudo nano nginx.conf
+```
+и добавьте в перечень server_name Ваш ID сервера
+8. Запустите docker-compose
+```
+sudo docker-compose up
+```
+закройте cmd (не останавливая работу сервера)
+10. Выполните миграции в контейнере foodgram-project_web. Для этого выполните команду на сервере, зайдя в него вновь 
+```
+sudo docker container ls -a
+```
+что бы узнать CONTAINER_ID. Выполните миграции
+```
+sudo docker exec CONTAINER_ID python manage.py migrate
+```
+9. Теперь проект будет доступен по URL Вашего ID сервера
+10. Для управления проектом создайте суперпользователя
+```
+sudo docker exec -ti CONTAINER_ID python manage.py createsuperuser
+```
+Теперь по адресу ID_сервера/admin-page/ будет доступен вход в административный раздел сайта
 
 
 ## Технологии
