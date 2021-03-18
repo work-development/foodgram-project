@@ -74,7 +74,7 @@ sudo nano nginx.conf
 sudo docker-compose up
 ```
 закройте cmd (не останавливая работу сервера)
-10. Выполните миграции в контейнере foodgram-project_web. Для этого выполните команду на сервере, зайдя в него вновь 
+9. Выполните миграции в контейнере foodgram-project_web. Для этого выполните команду на сервере, зайдя в него вновь 
 ```
 sudo docker container ls -a
 ```
@@ -82,8 +82,8 @@ sudo docker container ls -a
 ```
 sudo docker exec CONTAINER_ID python manage.py migrate
 ```
-9. Теперь проект будет доступен по URL Вашего ID сервера
-10. Для управления проектом создайте суперпользователя
+10. Теперь проект будет доступен по URL Вашего ID сервера
+11. Для управления проектом создайте суперпользователя
 ```
 sudo docker exec -ti CONTAINER_ID python manage.py createsuperuser
 ```
