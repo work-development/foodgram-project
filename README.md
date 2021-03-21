@@ -8,12 +8,12 @@
 ## Локальный запуск проекта
 1. Склонируйте проект
 2. Установите PostgreSQL и в pgAdmin создайте БД с именем foodgram
-3. В файле \foodgram\.env в переменную POSTGRES_PASSWORD введите пароль PostgreSQL
+3. В файле .env в переменную POSTGRES_PASSWORD введите пароль PostgreSQL
 4. Создайте виртуальное окружение 
 ```
 python -m venv venv
 ```
-5. Запустите виртуальное окружение
+5. Запустите виртуальное окружение.
 В cmd перейдите в директорию ...\venv\Scripts и выполните команду activate.bat
 6. Установите необходимые библиотеки  
 ```
@@ -28,6 +28,8 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
+Теперь проект будет доступен по адресу http://127.0.0.1:8000
+
 9. Для управления проектом создайте суперпользователя
 ```
 python manage.py createsuperuser
