@@ -75,6 +75,7 @@ sudo nano nginx.conf
 sudo docker-compose up
 ```
 закройте cmd (не останавливая работу сервера)
+
 9. Выполните миграции в контейнере foodgram-project_web. Для этого выполните команду на сервере, зайдя в него вновь 
 ```
 sudo docker container ls -a
